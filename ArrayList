@@ -1,0 +1,252 @@
+package genericarraylist;
+
+public class GenericArrayList<T> {
+
+    private T[] a = (T[]) new Object[3];
+    private int size = 0;
+
+    @Override
+    public String toString() {
+        String s = "{";
+        for (int i = 0; i < size; i++) {
+            s += a[i] + " ";
+        }
+        s += "}";
+        return s;
+    }
+
+    private void ensurcap() {
+        if (a.length == size) {
+            T[] temp = (T[]) new Object[a.length * 2];
+            for (int i = 0; i < size; i++) {
+                temp[i] = a[i];
+            }
+            a = temp;
+        }
+    }
+
+    int size() {
+        return size;
+    }
+
+    private void checkIndex(int i) {
+        if (i < 0 || i >= size) {
+            throw new ArrayIndexOutOfBoundsException("index" + i);
+        }
+    }
+
+    void add(T x) {
+
+        ensurcap();
+
+        a[size] = x;
+        size++;
+    }
+
+    T get(int i) {
+        checkIndex(i);
+        return a[i];
+    }
+
+    void set(int index, T x) {
+        if (size == 0) {
+            add(x);
+        }
+        checkIndex(index);
+        ensurcap();
+        for (int i = size - 1; i < index; i--) {
+            a[i + 1] = a[i];
+        }
+        a[index] = x;
+
+    }
+
+    T removelast() {
+        T temp = a[size - 1];
+        size--;
+        return temp;
+    }
+
+    void addFirst(T x) {
+        if (size == 0) {
+            add(x);
+        }
+        ensurcap();
+        for (int i = size - 1; i >= 0; i--) {
+            a[i + 1] = a[i];
+        }
+        a[0] = x;
+        size++;
+
+    }
+
+    T removeFirst() {
+        T temp = a[0];
+        for (int i = 0; i < size; i++) {
+            a[i] = a[i + 1];
+        }
+        size--;
+        return temp;
+    }
+
+    T removeByIndex(int index) {
+        checkIndex(index);
+        T temp = a[index];
+        for (int i = index; i < size; i++) {
+            a[i] = a[i + 1];
+        }
+        size--;
+        return temp;
+    }
+
+    void addByIndex(int index, T x) {
+        checkIndex(index);
+        if (index == 0) {
+            addFirst(x);
+        } else if (index == size - 1) {
+            add(x);
+        } else {
+            for (int i = size - 1; i >= index; i--) {
+                a[i + 1] = a[i];
+            }
+            a[index] = x;
+            size++;
+        }
+    }
+
+    void removeByValue(T value) {
+        int index = size;
+        for (int i = 0; i < size; i++) {
+            if (a[i] == value) {
+                index = i;
+            }
+        }
+        if (index == size) {
+            throw new ArrayIndexOutOfBoundsException("index" + index);
+
+        }
+        T temp = a[index];
+        for (int i = index; i < size; i++) {
+            a[i] = a[i + 1];
+        }
+        size--;
+    }
+
+    int IndexOfFirst(T value) {
+        int index = -1;
+        for (int i = 0; i < size; i++) {
+            if (a[i] == value) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    int IndexOflast(T value) {
+        int index = -1;
+        for (int i = 0; i < size; i++) {
+            if (a[i] == value) {
+                index = i;
+            }
+        }
+        return index;
+    }
+
+    boolean contains(T value) {
+        boolean res = false;
+        for (int i = 0; i < size; i++) {
+            if (a[i] == value) {
+                res = true;
+                break;
+            }
+        }
+        return res;
+    }
+
+    void tirmtosize() {
+        System.out.println(a.length);
+        if (a.length > size) {
+            T[] temp = (T[]) new Object[size];
+            for (int i = 0; i < size; i++) {
+                temp[i] = a[i];
+            }
+            a = temp;
+        }
+        System.out.println(a.length);
+    }
+
+    void RotatToRight(int x) {
+        for (int j = x; j > 0; j--) {
+            T temp = a[size - 1];
+            for (int i = size - 2; i >= 0; i--) {
+                a[i + 1] = a[i];
+            }
+            a[0] = temp;
+        }
+    }
+
+    void RotatToLift(int x) {
+        for (int i = x; i > 0; i--) {
+            T temp = a[0];
+            for (int j = 0; j < size - 1; j++) {
+                a[j] = a[j + 1];
+            }
+            a[size - 1] = temp;
+        }
+    }
+
+    void addAll(GenericArrayList x) {
+        for (int i = 0; i < x.size; i++) {
+            ensurcap();
+            a[size] = (T) x.get(i);
+            size++;
+        }
+    }
+
+    void AddAllByIndex(int index, GenericArrayList x) {
+        ensurcap();
+        for (int i = 0; i < x.size; i++) {
+            addByIndex(index, (T) x.get(i));
+            index++;
+        }
+    }
+
+    boolean containsAll(GenericArrayList x) {
+        boolean res = false;
+        int count = 0;
+        for (int i = 0; i < x.size; i++) {
+            if (contains((T) x.get(i))) {
+                count++;
+            }
+        }
+        if (count == x.size) {
+            res = true;
+        }
+        return res;
+    }
+
+    T remove(int index) {
+        T temp = a[index];
+
+        for (int i = index; i < size; i++) {
+            a[i] = a[i + 1];
+        }
+        size--;
+        return temp;
+    }
+
+    void RemoveAll(GenericArrayList x) {
+
+        for (int i = 0; i < this.size; i++) {
+            for (int j = 0; j < x.size; j++) {
+                if (a[i] == x.get(j)) {
+                    remove(i);
+                }
+            }
+        }
+    }
+
+
+    
+}
